@@ -3,9 +3,10 @@
 #include <vector>
 #include <unordered_map>
 #include <stack>
-#include <math.h>
+#include <math.h> 
 #include <string>
 #include <queue>
+#include <deque>
 //Defining constants
 #define Pi 3.14169
 #define e  2.718
@@ -13,6 +14,8 @@
 using namespace std;
 
 void shantin_yard(string expression);
+
+double add_nums (deque <string> &result,char ch);
 
 int main ()
 {
@@ -31,8 +34,9 @@ int main ()
 void shantin_yard(string expression)
 {
     stack <char> operators;
-    queue <string> result;
+    deque <string> result;
     unordered_map <char, int> precedence;
+    double temp_num;
     //Set precedense operators this way we know which operations to pass to the stacj result
     precedence.insert({'(',-1}); 
     precedence.insert({')',-1}); 
@@ -63,7 +67,7 @@ void shantin_yard(string expression)
                 }
             
             }
-            result.push(num);//Push number into queue after it has been read
+            result.push_back(num);//Push number into queue after it has been read
        
         }
 
@@ -90,13 +94,14 @@ void shantin_yard(string expression)
                                
                         
                         //Push operator to result queue, pop it from stack and add new operator to stack
-                        char temp = operators.top();
-                        stringstream strs;
-                        string char_string;
-                                //int n = 1;
-                        strs << temp ;
-                        strs >> char_string;
-                        result.push(char_string);
+                        //char temp = operators.top();
+                        //stringstream strs;
+                        //string char_string;
+                        //        //int n = 1;
+                        //strs << temp ;
+                        //strs >> char_string;
+                        //result.push_back(char_string);
+                        result.push_back(to_string(add_nums(result,operators.top())));
                         operators.pop();
                     }
                     operators.pop();//Remove the ( so that it doesn't stay in our result
@@ -109,13 +114,15 @@ void shantin_yard(string expression)
                     
                     {
                         //Push operator to result queue, pop it from stack and add new operator to stack
-                        char temp = operators.top();
-                        stringstream strs;
-                        string char_string;
-                                //int n = 1;
-                        strs << temp ;
-                        strs >> char_string;
-                        result.push(char_string);
+                        //char temp = operators.top();
+                        //stringstream strs;
+                        //string char_string;
+                        //        //int n = 1;
+                        //strs << temp ;
+                        //strs >> char_string;
+                        //result.push_back(char_string);
+
+                        result.push_back(to_string(add_nums(result,operators.top())));
                         operators.pop();
 
                     
@@ -136,12 +143,14 @@ void shantin_yard(string expression)
     while(!operators.empty())
     {
             
-       char temp = operators.top();
-       stringstream strs;
-       string char_string;
-       strs << temp ;
-       strs >> char_string;
-       result.push(char_string);
+      // char temp = operators.top();
+      // stringstream strs;
+      // string char_string;
+      // strs << temp ;
+      // strs >> char_string;
+      // result.push_back(char_string);
+       
+       result.push_back(to_string(add_nums(result,operators.top())));
        operators.pop();
     
     }
@@ -149,12 +158,43 @@ void shantin_yard(string expression)
     {
     
         cout<<result.front()<<endl;
-        result.pop();
+        result.pop_front();
     }
 
 }
 
+double add_nums (deque <string> &result,char ch)
+{
+    double temp_num1 = stod(result.back());
+    result.pop_back();
+    double temp_num2 = stod(result.back());
+    result.pop_back();
+    
+    if(ch == '+')
+    {
+       return  temp_num2 + temp_num1;
+    }
 
+    else if (ch == '-')
+    {
+       return  temp_num2 - temp_num1;
+    }
+
+    else if (ch == '*')
+    {
+       return  temp_num2 * temp_num1;
+    }
+
+    else if (ch == '/')
+    {
+       return  temp_num2/temp_num1;
+    }
+    else
+    {
+        return pow(temp_num2,temp_num1);
+    }
+
+}
 
 
 
