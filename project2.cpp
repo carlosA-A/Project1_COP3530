@@ -16,8 +16,8 @@ double add_nums (stack <string> &result,char ch);
 void check_var(string expr);
 string get_word(int &i, string &expr );
 double get_var(string var_name);
-
 double eval_func(stack <string> &result,char ch);
+void func_or_num(stack <string> &result,stack <char> &operators);
 int main ()
 {
 
@@ -161,21 +161,9 @@ double shantin_yard(string expression)
                     while(operators.top() != '(')
                     {
 
-
-                        if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
-                        {
-                            cout<<"sin eval"<<endl;
-                            result.push(to_string(eval_func(result,operators.top())));
-                            operators.pop();
-
-                        }
-                        else
-                        {
-
-                            cout<<"calculation eval"<<endl;
-                            result.push(to_string(add_nums(result,operators.top())));
-                            operators.pop();
-                        }
+                        //If operation intended is a function then evaluate cos, sin, log on result top which is the result of the expression inside the func ex sin(4+5)
+                        //result.top()=9 so we evaluate sin(9)
+                        func_or_num(result,operators);
                     }
                     operators.pop();//Remove the ( so that it doesn't stay in our result
 
@@ -187,20 +175,7 @@ double shantin_yard(string expression)
                     while(!operators.empty() && precedence.at(operators.top()) >= precedence.at(expression[i]))
 
                     {
-                        if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
-                        {
-                            cout<<"sin eval"<<endl;
-                            result.push(to_string(eval_func(result,operators.top())));
-                            operators.pop();
-
-                        }
-                        else
-                        {
-
-                            cout<<"calculation eval"<<endl;
-                            result.push(to_string(add_nums(result,operators.top())));
-                            operators.pop();
-                        }
+                        func_or_num(result,operators);
 
 
                     }
@@ -219,20 +194,7 @@ double shantin_yard(string expression)
 
     while(!operators.empty())
     {
-        if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
-        {
-            cout<<"sin eval"<<endl;
-            result.push(to_string(eval_func(result,operators.top())));
-            operators.pop();
-
-        }
-        else
-        {
-
-            cout<<"calculation eval"<<endl;
-            result.push(to_string(add_nums(result,operators.top())));
-            operators.pop();
-        }
+        func_or_num(result,operators);
 
     }
     //cout<<result.top()<<endl;
@@ -424,3 +386,23 @@ string get_word(int &i, string &expr )
 
 }
 
+void func_or_num(stack <string> &result,stack <char> &operators)
+{
+
+
+    if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
+    {
+        cout<<"sin eval"<<endl;
+        result.push(to_string(eval_func(result,operators.top())));
+        operators.pop();
+
+    }
+    else
+    {
+
+        cout<<"calculation eval"<<endl;
+        result.push(to_string(add_nums(result,operators.top())));
+        operators.pop();
+    }
+
+}
