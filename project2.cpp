@@ -20,6 +20,7 @@ void check_var(string expr);
 string get_word(int &i, string &expr );
 double get_var(string var_name);
 
+double eval_func(stack <string> &result,char ch);
 int main ()
 {
 
@@ -62,6 +63,9 @@ double shantin_yard(string expression)
     precedence.insert({'*',2});
     precedence.insert({'/',2});
     precedence.insert({'^',3});
+    precedence.insert({'s',5});
+    precedence.insert({'c',5});
+    precedence.insert({'l',5});
     //Start cheching mathematical expression
     for (int i = 0; i < expression.length();i++)
     {
@@ -75,7 +79,16 @@ double shantin_yard(string expression)
 
             if(var_name == "sin" ||var_name == "cos" || var_name =="log" )
             {
-            
+                cout<< "WORKS FOR SIN  "<<expression[i]<<endl;
+                if (var_name == "sin")
+                    operators.push('s');
+
+                else if(var_name == "cos")
+                    operators.push('c');
+                else
+                    operators.push('l');
+
+
                 
             
             }
@@ -103,11 +116,13 @@ double shantin_yard(string expression)
         //If it's a number make sure to take in all digits of the number ex:1 is diff than 100, for 100 we have to loop and look at the nums
         else if(isdigit(expression[i]))
         {
-
+            cout<<"IS digit executes"<<endl;
             string num=""; //New number will be created after every loop
 
             while(isdigit(expression[i]))//Grab the whole number 
             {
+
+                cout<<"add number"<<endl;
                 num += expression[i];
                 i++;
 
@@ -126,8 +141,11 @@ double shantin_yard(string expression)
         if (expression[i] == '(' ||expression[i] == ')' ||expression[i] == '+' || expression[i] == '-' ||expression[i] == '*' ||expression[i] == '/' ||expression[i] == '^' )//Check for operators
         {
         
+            cout<<"expression executes"<<endl;
             if (operators.empty()) //If stack with operators is empty then push operator into stack, no need to compare
             {
+                cout<<"empty stack"<<endl;
+
                 operators.push(expression[i]);
             }
             else //Check operator precenece, if the previous one is higher or equal than the new one then pop it from the stack and put it in the result queue 
@@ -135,11 +153,13 @@ double shantin_yard(string expression)
 
                 if (expression[i] == '(')
                 {
+                    cout<<"pushing ( to stack"<<endl;
                     operators.push(expression[i]);
                 
                 }
                 else if (expression[i] == ')')
                 {
+                    cout<<"pushing operators to stack"<<endl;
                     //Handle the order of operations when we see a parenthesis
                    while(operators.top() != '(')
                     {
@@ -155,12 +175,24 @@ double shantin_yard(string expression)
                 else
                 
                 {
+                    cout<<"Check precedence "<<endl;
                     while(!operators.empty() && precedence.at(operators.top()) >= precedence.at(expression[i]))
                     
                     {
-
-                        result.push(to_string(add_nums(result,operators.top())));
-                        operators.pop();
+                        if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
+                        {
+                            cout<<"sin eval"<<endl;
+                            result.push(to_string(eval_func(result,operators.top())));
+                            operators.pop();
+                        
+                        }
+                        else
+                        {
+                        
+                            cout<<"calculation eval"<<endl;
+                            result.push(to_string(add_nums(result,operators.top())));
+                            operators.pop();
+                        }
 
                     
                     }
@@ -179,8 +211,20 @@ double shantin_yard(string expression)
 
     while(!operators.empty())
     {
-       result.push(to_string(add_nums(result,operators.top())));
-       operators.pop();
+        if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
+        {
+            cout<<"sin eval"<<endl;
+            result.push(to_string(eval_func(result,operators.top())));
+            operators.pop();
+
+        }
+        else
+        {
+
+            cout<<"calculation eval"<<endl;
+            result.push(to_string(add_nums(result,operators.top())));
+            operators.pop();
+        }
     
     }
      //cout<<result.top()<<endl;
@@ -225,6 +269,29 @@ double add_nums (stack <string> &result,char ch)
 
 }
 
+double eval_func(stack <string> &result,char ch)
+{
+    
+    double temp_num1 = stod(result.top());
+    result.pop();
+    
+    cout<<"WORKS add_NUMS 3 "<< temp_num1<<endl;
+    if (ch == 's')
+    {
+        return sin(temp_num1);
+    }
+
+    else if (ch == 'c')
+    {
+        return cos(temp_num1);
+    }
+    else if (ch == 'l')
+    {
+        return log(temp_num1);
+    }
+
+
+}
 void save_var (string var_name,double var_num) 
 
 {
@@ -349,13 +416,3 @@ string get_word(int &i, string &expr )
 
 }
 
-double eval_func(int &i, string & expr, string &func)
-{
-    if(func == "cos")
-    {
-        return cos(expr.substr())
-    
-    
-    }
-
-}
