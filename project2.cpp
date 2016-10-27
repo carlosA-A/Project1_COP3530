@@ -76,7 +76,6 @@ double shantin_yard(string expression)
 
             if(var_name == "sin" ||var_name == "cos" || var_name =="log" )
             {
-                cout<< "WORKS FOR SIN  "<<expression[i]<<endl;
                 if (var_name == "sin")
                     operators.push('s');
 
@@ -84,10 +83,6 @@ double shantin_yard(string expression)
                     operators.push('c');
                 else
                     operators.push('l');
-
-
-
-
             }
             //Value is a variable so retrieve value
             else
@@ -105,21 +100,17 @@ double shantin_yard(string expression)
 
                 }
 
-
-
             }
         }
 
         //If it's a number make sure to take in all digits of the number ex:1 is diff than 100, for 100 we have to loop and look at the nums
         else if(isdigit(expression[i]))
         {
-            cout<<"IS digit executes"<<endl;
             string num=""; //New number will be created after every loop
 
             while(isdigit(expression[i]))//Grab the whole number 
             {
 
-                cout<<"add number"<<endl;
                 num += expression[i];
                 i++;
 
@@ -138,10 +129,8 @@ double shantin_yard(string expression)
         if (expression[i] == '(' ||expression[i] == ')' ||expression[i] == '+' || expression[i] == '-' ||expression[i] == '*' ||expression[i] == '/' ||expression[i] == '^' )//Check for operators
         {
 
-            cout<<"expression executes"<<endl;
             if (operators.empty()) //If stack with operators is empty then push operator into stack, no need to compare
             {
-                cout<<"empty stack"<<endl;
 
                 operators.push(expression[i]);
             }
@@ -150,13 +139,11 @@ double shantin_yard(string expression)
 
                 if (expression[i] == '(')
                 {
-                    cout<<"pushing ( to stack"<<endl;
                     operators.push(expression[i]);
 
                 }
                 else if (expression[i] == ')')
                 {
-                    cout<<"pushing operators to stack"<<endl;
                     //Handle the order of operations when we see a parenthesis
                     while(operators.top() != '(')
                     {
@@ -171,7 +158,6 @@ double shantin_yard(string expression)
                 else
 
                 {
-                    cout<<"Check precedence "<<endl;
                     while(!operators.empty() && precedence.at(operators.top()) >= precedence.at(expression[i]))
 
                     {
@@ -186,9 +172,6 @@ double shantin_yard(string expression)
 
         }
 
-
-
-
     }
     //push all remaining elements in the stack to our result queue 
 
@@ -197,11 +180,9 @@ double shantin_yard(string expression)
         func_or_num(result,operators);
 
     }
-    //cout<<result.top()<<endl;
     double final_result = stod(result.top());
     cout<< final_result;
     return final_result;
-    //result.pop();
 
 
 }
@@ -245,7 +226,6 @@ double eval_func(stack <string> &result,char ch)
     double temp_num1 = stod(result.top());
     result.pop();
 
-    cout<<"WORKS add_NUMS 3 "<< temp_num1<<endl;
     if (ch == 's')
     {
         return sin(temp_num1);
@@ -312,14 +292,12 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
     if (val == "let") //Get the variable name
     {
 
-        cout<<"works 5"<<endl;
         for(;i<expr.size();i++)
         {
 
             if(expr[i] == '=')//skip empty spaces
             {
 
-                cout<<"works 2"<<endl;
                 break;
             }
             else if(isalpha(expr[i]))
@@ -327,14 +305,11 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
                 var_name += expr[i];
 
 
-                cout<<"works 3"<<endl;
             }
 
-            cout<<"works 6"<<endl;
         }   
 
 
-        cout<<"works 8"<<endl;
         //create a substring with the expression to be saved in the variable name
         cout<<var_name<<" "<<endl;
         save_var(var_name,shantin_yard(expr.substr(i+2))); 
@@ -343,7 +318,6 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
     else
     {
 
-        cout<<"works 9"<<endl;
         shantin_yard(expr); 
 
     }
@@ -359,17 +333,15 @@ string get_word(int &i, string &expr )
     for(; i<expr.size();i++)
     {
         //If we already found the first word the break from the loop since we are only interested in checking if it's a let keyword
-        cout<<"works 1"<<endl;
         if (word_found == true && !isalpha(expr[i]) ) //make sure that we are not still grabing the first word
         {
 
             break;
         }
 
-        else if(expr[i]==' ')
+        else if(expr[i]==' ')//Ignore whitespace
         {
 
-            cout<<"works 54"<<endl;
 
         }    
 
@@ -378,7 +350,6 @@ string get_word(int &i, string &expr )
             word_found = true;
             val+=expr[i];
 
-            cout<<"works 3"<<endl;
         }
 
     }
@@ -392,7 +363,6 @@ void func_or_num(stack <string> &result,stack <char> &operators)
 
     if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
     {
-        cout<<"sin eval"<<endl;
         result.push(to_string(eval_func(result,operators.top())));
         operators.pop();
 
@@ -400,7 +370,6 @@ void func_or_num(stack <string> &result,stack <char> &operators)
     else
     {
 
-        cout<<"calculation eval"<<endl;
         result.push(to_string(add_nums(result,operators.top())));
         operators.pop();
     }
