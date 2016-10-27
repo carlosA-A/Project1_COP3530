@@ -9,15 +9,16 @@
 using namespace std;
 
 
-static unordered_map <string,double> vars;
+unordered_map <string,double> vars;//Hash map to store all of our varialbes
 
-double shantin_yard(string expression);
-double add_nums (stack <string> &result,char ch);
-void check_var(string expr);
-string get_word(int &i, string &expr );
-double get_var(string var_name);
-double eval_func(stack <string> &result,char ch);
-void func_or_num(stack <string> &result,stack <char> &operators);
+double shantin_yard(string expression);//Use to stacks to perform shantin yard algorithem
+double add_nums (stack <string> &result,char ch);//do mathematical operations on values in stack
+void check_var(string expr);//Determine if we want to set a variable ex: let x = 5+5
+string get_word(int &i, string &expr );//extract a word from an expression to either use as a variable or function
+double get_var(string var_name);//Get numerical value associated with the varialbe
+double eval_func(stack <string> &result,char ch);//calculate value of function like sin cos log
+void func_or_num(stack <string> &result,stack <char> &operators);//determine if we are working with +,-,* or functions and do appropriate operations
+
 int main ()
 {
 
@@ -25,14 +26,22 @@ int main ()
     vars.insert({"e", 2.718});
     string calc;
 
-    while (calc != "exit")
+    while (calc != "quit")
     {
+        try
+        {
 
-        getline (std::cin,calc);
+            getline (std::cin,calc);
 
 
-        //shantin_yard(calc);
-        check_var(calc);
+            //shantin_yard(calc);
+            check_var(calc);
+        }
+
+        catch (const char* msg) 
+        {
+            cerr << msg << endl;
+        }
 
 
     }
@@ -181,7 +190,7 @@ double shantin_yard(string expression)
 
     }
     double final_result = stod(result.top());
-    cout<< final_result;
+    cout<< final_result<<endl;
     return final_result;
 
 
@@ -211,6 +220,10 @@ double add_nums (stack <string> &result,char ch)
 
     else if (ch == '/')
     {
+        if(temp_num1==0)
+        {
+            throw "Division-By-Zero";
+        }
         return  temp_num2/temp_num1;
     }
     else
@@ -267,8 +280,7 @@ double get_var(string var_name)
 
     if (it == vars.end())//if var is not in map return an error
     {
-        cout<<"error"<<endl;
-        return -1;
+        throw "Undeclared-Variable";
 
     }
     else//retrieve the value of the varialbe if it's in the map
@@ -282,12 +294,10 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
 {
     string var_name;
 
-    string val;//used ,to check if string is "let" or just a variable name or sin cos etc;
+    string val;//used ,to check if string is "let" or just a variable name or sin  etc;
 
     int i = 0;
-
-    cout<<val<<"       "<<endl;
-
+    
     val = get_word(i,expr);
     if (val == "let") //Get the variable name
     {
@@ -311,7 +321,6 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
 
 
         //create a substring with the expression to be saved in the variable name
-        cout<<var_name<<" "<<endl;
         save_var(var_name,shantin_yard(expr.substr(i+2))); 
 
     }
