@@ -18,7 +18,6 @@ string get_word(int &i, string &expr );//extract a word from an expression to ei
 double get_var(string var_name);//Get numerical value associated with the varialbe
 double eval_func(stack <string> &result,char ch);//calculate value of function like sin cos log
 void func_or_num(stack <string> &result,stack <char> &operators);//determine if we are working with +,-,* or functions and do appropriate operations
-
 int main ()
 {
 
@@ -37,7 +36,10 @@ int main ()
             //shantin_yard(calc);
             check_var(calc);
         }
-
+        catch(exception &e)
+        {
+            return EXIT_SUCCESS;
+        }
         catch (const char* msg) 
         {
             cerr << msg << endl;
@@ -280,6 +282,9 @@ double get_var(string var_name)
 
     if (it == vars.end())//if var is not in map return an error
     {
+        if(var_name == "quit")
+            throw std::exception();
+
         throw "Undeclared-Variable";
 
     }
