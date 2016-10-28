@@ -30,7 +30,7 @@ int main ()
         try
         {
             getline (std::cin,calc);
-            if(calc.length() > 1)
+            if(calc.length() >= 1)
                 check_var(calc);
         }
         catch(exception &e)
@@ -186,7 +186,10 @@ double shantin_yard(string expression,bool &let)
     double final_result = result.top();
     //Only print out if there was a calculation performed not a variable assignment
     if(!let)
-    cout<< final_result<<endl;
+    {
+
+        cout<< final_result<<endl;
+    }
 
     return final_result;
 
@@ -202,25 +205,25 @@ double add_nums (stack <double> &result,char ch)
 
     if(ch == '+')
     {
-        //cout<<"ADDITION: "<< temp_num2 + temp_num1<<endl;
+        ////cout<<"ADDITION: "<< temp_num2 + temp_num1<<endl;
         return  temp_num2 + temp_num1;
     }
 
     else if (ch == '-')
     {
-        //cout<<"SUBSTRACTION: "<< temp_num2 - temp_num1<<endl;
+        ////cout<<"SUBSTRACTION: "<< temp_num2 - temp_num1<<endl;
         return  temp_num2 - temp_num1;
     }
 
     else if (ch == '*')
     {
-        //cout<<"MULT: "<< temp_num2 * temp_num1<<endl;
+        ////cout<<"MULT: "<< temp_num2 * temp_num1<<endl;
         return  temp_num2 * temp_num1;
     }
 
     else if (ch == '/')
     {
-        //cout<<"DIVISION: "<< temp_num2 / temp_num1<<endl;
+        ////cout<<"DIVISION: "<< temp_num2 / temp_num1<<endl;
         if(temp_num1==0)
         {
             throw "Division-By-Zero";
@@ -229,7 +232,7 @@ double add_nums (stack <double> &result,char ch)
     }
     else if (ch == '^')
     {
-        //cout<<"EXPNT: "<< pow(temp_num2,temp_num1)<<endl;
+        ////cout<<"EXPNT: "<< pow(temp_num2,temp_num1)<<endl;
         return pow(temp_num2,temp_num1);
     }
 
@@ -266,7 +269,7 @@ void save_var (string var_name,double var_num)
     //find returns an iterator to the end of the map
     if(it == vars.end())//check if varialbe is already in hashmap if it's not add it else update the value
     {
-
+        //cout<<"VAR_NAME: "<<var_name<<"\n"<<"VAR_NUM: "<<var_num<<endl;
         vars.insert({var_name,var_num});
 
     }
@@ -307,6 +310,7 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
     int i = 0;
     
     val = get_word(i,expr);
+    //cout<<"AFTER GET WORD: "<<val<<endl;
     if (val == "let") //Get the variable name
     {   
         let = true; // tell program that there was a let found, use this to know not to print out the value of the result
@@ -327,10 +331,10 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
             }
 
         }   
-
+        //cout<<"VAR_NAME: "<<var_name<<endl;
 
         //create a substring with the expression to be saved in the variable name
-        save_var(var_name,shantin_yard(expr.substr(i+2),let)); 
+        save_var(var_name,shantin_yard(expr.substr(i+1),let)); 
 
     }
     else
@@ -347,7 +351,7 @@ string get_word(int &i, string &expr )
     string val = "";
 
     bool word_found = false;
-
+    //cout<<"GET word: "<<expr<<endl;
     for(; i<expr.size();i++)
     {
         //If we already found the first word the break from the loop since we are only interested in checking if it's a let keyword
@@ -365,6 +369,7 @@ string get_word(int &i, string &expr )
 
         else if(isalpha(expr[i]))
         {
+            //cout<<"FOUND CHAR: "<<expr[i]<<endl;
             word_found = true;
             val+=expr[i];
 
