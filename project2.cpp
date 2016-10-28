@@ -20,7 +20,7 @@ double eval_func(stack <string> &result,char ch);//calculate value of function l
 void func_or_num(stack <string> &result,stack <char> &operators);//determine if we are working with +,-,* or functions and do appropriate operations
 int main ()
 {
-
+    //Add constants that we will use into the hash map
     vars.insert({"Pi",3.14169});
     vars.insert({"e", 2.718});
     string calc;
@@ -29,12 +29,9 @@ int main ()
     {
         try
         {
-
             getline (std::cin,calc);
-
-
-            //shantin_yard(calc);
-            check_var(calc);
+            if(calc.length() > 1)
+                check_var(calc);
         }
         catch(exception &e)
         {
@@ -44,7 +41,6 @@ int main ()
         {
             cerr << msg << endl;
         }
-
 
     }
 
