@@ -12,12 +12,12 @@ using namespace std;
 unordered_map <string,double> vars;//Hash map to store all of our varialbes
 
 double shantin_yard(string expression);//Use to stacks to perform shantin yard algorithem
-double add_nums (stack <string> &result,char ch);//do mathematical operations on values in stack
+double add_nums (stack <double> &result,char ch);//do mathematical operations on values in stack
 void check_var(string expr);//Determine if we want to set a variable ex: let x = 5+5
 string get_word(int &i, string &expr );//extract a word from an expression to either use as a variable or function
 double get_var(string var_name);//Get numerical value associated with the varialbe
-double eval_func(stack <string> &result,char ch);//calculate value of function like sin cos log
-void func_or_num(stack <string> &result,stack <char> &operators);//determine if we are working with +,-,* or functions and do appropriate operations
+double eval_func(stack <double> &result,char ch);//calculate value of function like sin cos log
+void func_or_num(stack <double> &result,stack <char> &operators);//determine if we are working with +,-,* or functions and do appropriate operations
 int main ()
 {
     //Add constants that we will use into the hash map
@@ -39,7 +39,7 @@ int main ()
         }
         catch (const char* msg) 
         {
-            cerr << msg << endl;
+            cout << msg << endl;
         }
 
     }
@@ -54,7 +54,7 @@ double shantin_yard(string expression)
 {
 
     stack <char> operators;
-    stack <string> result;
+    stack <double> result;
     unordered_map <char, int> precedence;
     double temp_num;
     double var_val;//value of var being retrieved
@@ -96,16 +96,9 @@ double shantin_yard(string expression)
             {
 
                 var_val = get_var(var_name);
-                if (var_val == -1)
-                {
+                result.push(var_val);   
 
-                    return -1;
-                }
-                else
-                {
-                    result.push(to_string(var_val));   
 
-                }
 
             }
         }
@@ -129,7 +122,7 @@ double shantin_yard(string expression)
                 }
 
             }
-            result.push(num);//Push number into queue after it has been read
+            result.push(stod(num));//Push number into queue after it has been read
 
         }
 
@@ -165,7 +158,7 @@ double shantin_yard(string expression)
                 else
 
                 {
-                    while(!operators.empty() && precedence.at(operators.top()) >= precedence.at(expression[i]))
+                    while(!operators.empty() && precedence.at(operators.top()) >= precedence.at(expression[i]) && !(operators.top() =='^' && expression[i]=='^'))
 
                     {
                         func_or_num(result,operators);
@@ -187,54 +180,59 @@ double shantin_yard(string expression)
         func_or_num(result,operators);
 
     }
-    double final_result = stod(result.top());
+    double final_result = result.top();
     cout<< final_result<<endl;
     return final_result;
 
 
 }
 
-double add_nums (stack <string> &result,char ch)
+double add_nums (stack <double> &result,char ch)
 {
-    double temp_num1 = stod(result.top());
+    double temp_num1 = result.top();
     result.pop();
-    double temp_num2 = stod(result.top());
+    double temp_num2 = result.top();
     result.pop();
 
     if(ch == '+')
     {
+        cout<<"ADDITION: "<< temp_num2 + temp_num1<<endl;
         return  temp_num2 + temp_num1;
     }
 
     else if (ch == '-')
     {
+        cout<<"SUBSTRACTION: "<< temp_num2 - temp_num1<<endl;
         return  temp_num2 - temp_num1;
     }
 
     else if (ch == '*')
     {
+        cout<<"MULT: "<< temp_num2 * temp_num1<<endl;
         return  temp_num2 * temp_num1;
     }
 
     else if (ch == '/')
     {
+        cout<<"DIVISION: "<< temp_num2 / temp_num1<<endl;
         if(temp_num1==0)
         {
             throw "Division-By-Zero";
         }
         return  temp_num2/temp_num1;
     }
-    else
+    else if (ch == '^')
     {
+        cout<<"EXPNT: "<< pow(temp_num2,temp_num1)<<endl;
         return pow(temp_num2,temp_num1);
     }
 
 }
 
-double eval_func(stack <string> &result,char ch)
+double eval_func(stack <double> &result,char ch)
 {
 
-    double temp_num1 = stod(result.top());
+    double temp_num1 = result.top();
     result.pop();
 
     if (ch == 's')
@@ -367,20 +365,20 @@ string get_word(int &i, string &expr )
 
 }
 
-void func_or_num(stack <string> &result,stack <char> &operators)
+void func_or_num(stack <double> &result,stack <char> &operators)
 {
 
 
     if(operators.top() == 's' ||operators.top() == 'c' ||operators.top() == 'l' )
     {
-        result.push(to_string(eval_func(result,operators.top())));
+        result.push(eval_func(result,operators.top()));
         operators.pop();
 
     }
     else
     {
 
-        result.push(to_string(add_nums(result,operators.top())));
+        result.push(add_nums(result,operators.top()));
         operators.pop();
     }
 
