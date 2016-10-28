@@ -11,7 +11,7 @@ using namespace std;
 
 unordered_map <string,double> vars;//Hash map to store all of our varialbes
 
-double shantin_yard(string expression);//Use to stacks to perform shantin yard algorithem
+double shantin_yard(string expression,bool & let);//Use to stacks to perform shantin yard algorithem, keep track of if the variable assignment let was used
 double add_nums (stack <double> &result,char ch);//do mathematical operations on values in stack
 void check_var(string expr);//Determine if we want to set a variable ex: let x = 5+5
 string get_word(int &i, string &expr );//extract a word from an expression to either use as a variable or function
@@ -50,7 +50,7 @@ int main ()
 
 //Take in a string with numbers and operations and return the calculation ex: 5+2-6 = 1
 
-double shantin_yard(string expression)
+double shantin_yard(string expression,bool &let)
 {
 
     stack <char> operators;
@@ -181,7 +181,10 @@ double shantin_yard(string expression)
 
     }
     double final_result = result.top();
+    //Only print out if there was a calculation performed not a variable assignment
+    if(!let)
     cout<< final_result<<endl;
+
     return final_result;
 
 
@@ -196,25 +199,25 @@ double add_nums (stack <double> &result,char ch)
 
     if(ch == '+')
     {
-        cout<<"ADDITION: "<< temp_num2 + temp_num1<<endl;
+        //cout<<"ADDITION: "<< temp_num2 + temp_num1<<endl;
         return  temp_num2 + temp_num1;
     }
 
     else if (ch == '-')
     {
-        cout<<"SUBSTRACTION: "<< temp_num2 - temp_num1<<endl;
+        //cout<<"SUBSTRACTION: "<< temp_num2 - temp_num1<<endl;
         return  temp_num2 - temp_num1;
     }
 
     else if (ch == '*')
     {
-        cout<<"MULT: "<< temp_num2 * temp_num1<<endl;
+        //cout<<"MULT: "<< temp_num2 * temp_num1<<endl;
         return  temp_num2 * temp_num1;
     }
 
     else if (ch == '/')
     {
-        cout<<"DIVISION: "<< temp_num2 / temp_num1<<endl;
+        //cout<<"DIVISION: "<< temp_num2 / temp_num1<<endl;
         if(temp_num1==0)
         {
             throw "Division-By-Zero";
@@ -223,7 +226,7 @@ double add_nums (stack <double> &result,char ch)
     }
     else if (ch == '^')
     {
-        cout<<"EXPNT: "<< pow(temp_num2,temp_num1)<<endl;
+        //cout<<"EXPNT: "<< pow(temp_num2,temp_num1)<<endl;
         return pow(temp_num2,temp_num1);
     }
 
@@ -291,6 +294,7 @@ double get_var(string var_name)
 
 void check_var(string expr)//Take in expression and determine if it's setting a value to a variable or just evaluating an expression
 {
+    bool let = false;
     string var_name;
 
     string val;//used ,to check if string is "let" or just a variable name or sin  etc;
@@ -299,7 +303,8 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
     
     val = get_word(i,expr);
     if (val == "let") //Get the variable name
-    {
+    {   
+        let = true; // tell program that there was a let found, use this to know not to print out the value of the result
 
         for(;i<expr.size();i++)
         {
@@ -320,13 +325,13 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
 
 
         //create a substring with the expression to be saved in the variable name
-        save_var(var_name,shantin_yard(expr.substr(i+2))); 
+        save_var(var_name,shantin_yard(expr.substr(i+2),let)); 
 
     }
     else
     {
 
-        shantin_yard(expr); 
+        shantin_yard(expr,let); 
 
     }
 
