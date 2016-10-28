@@ -158,6 +158,9 @@ double shantin_yard(string expression,bool &let)
                 else
 
                 {
+                   //compare precedense of operators
+                   //if we have multiple ^ then put them on the stack instead sure of poping since it's a special case
+                   //2^3^2 = 512 if we didn't account for this exception the result would be 64
                     while(!operators.empty() && precedence.at(operators.top()) >= precedence.at(expression[i]) && !(operators.top() =='^' && expression[i]=='^'))
 
                     {
@@ -189,7 +192,7 @@ double shantin_yard(string expression,bool &let)
 
 
 }
-
+//evaluate normal expression
 double add_nums (stack <double> &result,char ch)
 {
     double temp_num1 = result.top();
@@ -231,7 +234,8 @@ double add_nums (stack <double> &result,char ch)
     }
 
 }
-
+//Calculate values of functions sin(90) sin(x+2*2), shantin_yard calculates the result and stores it at the top of the result stack so no matter how big the expression
+//inside eval the final result will be on top of stack
 double eval_func(stack <double> &result,char ch)
 {
 
@@ -254,32 +258,33 @@ double eval_func(stack <double> &result,char ch)
 
 
 }
+//save a var and value into a map
 void save_var (string var_name,double var_num) 
 
 {
-    auto it = vars.find(var_name);
-
+    auto it = vars.find(var_name);//check if variable already exists
+    //find returns an iterator to the end of the map
     if(it == vars.end())//check if varialbe is already in hashmap if it's not add it else update the value
     {
 
         vars.insert({var_name,var_num});
 
     }
-    else
+    else//updates value of varialbe in map
     {
         it->second = var_num;
     }
 
 
 }
-
+//get the value associated with a variable
 double get_var(string var_name)
 {
     auto it = vars.find(var_name);
 
     if (it == vars.end())//if var is not in map return an error
     {
-        if(var_name == "quit")
+        if(var_name == "quit")//Throw and exception if the user types quit that will terminate the program
             throw std::exception();
 
         throw "Undeclared-Variable";
@@ -309,12 +314,12 @@ void check_var(string expr)//Take in expression and determine if it's setting a 
         for(;i<expr.size();i++)
         {
 
-            if(expr[i] == '=')//skip empty spaces
+            if(expr[i] == '=')//stop when we see = let var = 5,stops at =
             {
 
                 break;
             }
-            else if(isalpha(expr[i]))
+            else if(isalpha(expr[i])) //concatnate variable
             {
                 var_name += expr[i];
 
@@ -369,7 +374,7 @@ string get_word(int &i, string &expr )
     return val;
 
 }
-
+//Determine if we are using functions, if so then operate on them using eval_func, else evaluate normal expressions 
 void func_or_num(stack <double> &result,stack <char> &operators)
 {
 
